@@ -9,6 +9,7 @@ function App() {
   const {SettingsService} = useStore();
 
   const mapRef = useRef<MapComponent>(null);
+  // @ts-ignore
   const [map, setMap] = useState<MapOL>();
 
   return (

@@ -6,7 +6,7 @@ import {Map as MapOL} from 'ol';
 
 
 function App() {
-  const {SettingsService, MapService} = useStore();
+  const {SettingsService} = useStore();
 
   const mapRef = useRef<MapComponent>(null);
   const [map, setMap] = useState<MapOL>();
@@ -18,7 +18,7 @@ function App() {
           ref={mapRef}
           defaultCenter={SettingsService.mapCenter}
           defaultZoom={SettingsService.mapZoom}
-          currentLayer={SettingsService.mapLayer}
+          // currentLayer={SettingsService.mapLayer}
           onLoadMap={setMap}
         />
       </MapContainer>

@@ -76,7 +76,7 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, never>{
     this.modify.removePoint();
   }
 
-  handleDrawend = (e) => {
+  handleDrawend = (e: any) => {
     this.props.map.removeInteraction(this.draw);
 
     const format = new GeoJSON();
@@ -84,7 +84,7 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, never>{
     this.props.finishedEdit(geoJsonStr);
   }
 
-  handleModifyend = (e) => {
+  handleModifyend = (e: any) => {
     const features = e.features.getArray();
 
     if (features.length) {

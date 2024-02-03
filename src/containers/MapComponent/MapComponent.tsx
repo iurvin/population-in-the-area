@@ -9,6 +9,7 @@ import {fromLonLat} from "ol/proj";
 import TileLayer from "ol/layer/Tile";
 import {OSM} from "ol/source";
 import BaseLayer from "ol/layer/Base";
+import {defaults as defaultInteractions} from 'ol/interaction.js';
 
 export enum MapLayerType {
   'OSM' = 'OSM',
@@ -79,6 +80,12 @@ export class MapComponent extends Component<Props, State>{
     this.initMap();
   }
 
+  private onLoadMap() {
+    if (this.props.onLoadMap) {
+      this.props.onLoadMap(this.state.map);
+    }
+  }
+
   initMap() {
     if (this.mapContainer.current) {
       const map = new OLMap({
@@ -92,6 +99,9 @@ export class MapComponent extends Component<Props, State>{
         controls: [],
         target: this.mapContainer.current,
         overlays: [this.overlay],
+        interactions: defaultInteractions({
+          doubleClickZoom: false,
+        }),
       });
 
       this.getMap().assignMap(map);
@@ -111,6 +121,7 @@ export class MapComponent extends Component<Props, State>{
 
       this.setState({map}, () => {
         this.setLayer();
+        this.onLoadMap();
       });
     }
   }

@@ -35,7 +35,10 @@ function App() {
       'geometry': '1'
     }))
       .then((res) => {
-        console.log('res', res);
+        return  res.json();
+      })
+      .then((res) => {
+        console.log('population_rsv', res.population_rsv);
       })
   }, []);
 

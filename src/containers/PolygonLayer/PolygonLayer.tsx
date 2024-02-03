@@ -10,7 +10,7 @@ export interface MapLayerProps {
   map: MapOL;
   isRemovePolygon: boolean;
   isEdit: boolean;
-  finishedEdit: (coords: number[])  => void;
+  finishedEdit: (coords: number[][])  => void;
 }
 
 export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
@@ -50,18 +50,26 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     });
   }
 
-  handleDblClick = () => {
+  handleDblClick = (e) => {
     this.modify.removePoint();
-    this.props.finishedEdit([3,4]);
   }
 
-  handleDrawend = () => {
+  handleDrawend = (e) => {
     this.props.map.removeInteraction(this.draw);
-    // this.props.finishedEdit([1,2]);
+
+    const feature = e.feature;
+    const coords = feature.getGeometry().getCoordinates();
+
+    this.props.finishedEdit(coords);
   }
 
-  handleModifyend = () => {
-    this.props.finishedEdit([5,6]);
+  handleModifyend = (e) => {
+    const features = e.features.getArray();
+
+    if (features.length) {
+      const coords = e.features.getArray()[0].getGeometry().getCoordinates();
+      this.props.finishedEdit(coords);
+    }
   }
 
   startEdit() {
@@ -84,8 +92,6 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     this.props.map.removeInteraction(this.modify);
     this.props.map.removeInteraction(this.draw);
     this.props.map.removeInteraction(this.snap);
-
-
   }
 
   addLayers() {

@@ -29,7 +29,7 @@ function App() {
     }
   }, [isRemovePolygon]);
 
-  const getPopulation = useCallback((coords: any[]) => {
+  const getPopulation = useCallback((coords: number[][]) => {
     console.log('getPopulation coords', coords)
   }, []);
 

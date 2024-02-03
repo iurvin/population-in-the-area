@@ -10,4 +10,7 @@ export const ButtonsBlock = styled.div`
     & button {
         margin-bottom: 10px;
     }
+    & button:focus, button:focus-visible {
+        outline: none;
+    }
 `;

@@ -33,7 +33,7 @@ function App() {
     <>
       <ButtonsBlock>
         <EditButton isActive={isEditablePolygon} changeStatus={setEditablePolygon} />
-        <RemovePolygonButton isActive={isRemovePolygon} changeStatus={() => {
+        <RemovePolygonButton isActive={true} changeStatus={() => {
           setRemove(true);
         }} />
       </ButtonsBlock>

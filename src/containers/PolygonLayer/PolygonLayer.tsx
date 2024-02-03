@@ -5,7 +5,6 @@ import {Draw, Modify, Snap} from "ol/interaction";
 import {Feature} from "ol";
 import {Map as MapOL} from 'ol';
 import {Component} from "react";
-import {log} from "ol/console";
 
 export interface MapLayerProps {
   map: MapOL;
@@ -40,7 +39,7 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     this.editLayer = new VectorLayer({
       source: this.editSource,
       style: {
-        'fill-color': 'rgba(255, 255, 255, 0.2)',
+        'fill-color': 'rgba(255, 255, 255, 0.3)',
         'stroke-color': '#FF0000',
         'stroke-width': 2,
         'circle-radius': 7,
@@ -98,6 +97,8 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   componentDidUpdate() {
     if (this.props.isRemovePolygon) {
       this.editSource.clear();
+      this.removeLayers();
+      this.addLayers();
     }
 
     if (this.props.isEdit) {

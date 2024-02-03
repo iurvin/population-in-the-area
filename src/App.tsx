@@ -1,11 +1,12 @@
-import {useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import './App.css'
 import {MapComponent, MapContainer} from "./containers/MapComponent";
 import {useStore} from "./services/Store.ts";
 import {Map as MapOL} from 'ol';
 import {PolygonLayer} from "./containers/PolygonLayer";
-import {EditButton} from './containers/EditButton';
 import {ButtonsBlock} from "./containers/ButtonsBlock";
+import {EditButton} from './containers/EditButton';
+import {RemovePolygonButton} from "./containers/RemovePolygonButton";
 
 
 function App() {
@@ -14,11 +15,27 @@ function App() {
   const mapRef = useRef<MapComponent>(null);
   const [map, setMap] = useState<MapOL>();
   const [isEditablePolygon, setEditablePolygon] = useState(false);
+  const [isRemovePolygon, setRemove] = useState(false);
+
+  useEffect(() => {
+    if (isEditablePolygon) {
+      setRemove(false);
+    }
+  }, [isEditablePolygon]);
+
+  useEffect(() => {
+    if (isRemovePolygon) {
+      setEditablePolygon(false);
+    }
+  }, [isRemovePolygon])
 
   return (
     <>
       <ButtonsBlock>
         <EditButton isActive={isEditablePolygon} changeStatus={setEditablePolygon} />
+        <RemovePolygonButton isActive={isRemovePolygon} changeStatus={() => {
+          setRemove(true);
+        }} />
       </ButtonsBlock>
       <MapContainer>
         <MapComponent
@@ -30,8 +47,8 @@ function App() {
         {map && (
           <PolygonLayer
             map={map}
-            show={true}
             isEdit={isEditablePolygon}
+            isRemovePolygon={isRemovePolygon}
           />
         )}
       </MapContainer>

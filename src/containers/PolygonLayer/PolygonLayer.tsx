@@ -8,13 +8,15 @@ import {Component} from "react";
 
 export interface MapLayerProps {
   map: MapOL;
-  show: boolean;
+  isRemovePolygon: boolean;
   isEdit: boolean;
 }
 
 export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
+  source = new VectorSource<Feature<Geometry>>();
   editSource = new VectorSource<Feature<Geometry>>();
 
+  layer: VectorLayer<any> | undefined;
   editLayer: VectorLayer<any> | undefined;
 
   modify = new Modify({source: this.editSource});
@@ -54,9 +56,6 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
       this.props.map.addInteraction(this.draw);
       this.draw.on('drawend', (e) => {
         this.props.map.removeInteraction(this.draw);
-        // if (this.props.onAddFeature) {
-        //   this.props.onAddFeature();
-        // }
       });
     }
   }
@@ -84,16 +83,18 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   }
 
   componentDidMount() {
-    if (this.props.show) {
       this.addLayers();
-    }
   }
 
   componentWillUnmount() {
     this.removeLayers();
   }
 
-  componentDidUpdate(prevProps: Readonly<MapLayerProps & T>, prevState: Readonly<any>, snapshot?: any) {
+  componentDidUpdate() {
+    if (this.props.isRemovePolygon) {
+      this.editSource.clear();
+    }
+
     if (this.props.isEdit) {
       this.startEdit();
     } else {

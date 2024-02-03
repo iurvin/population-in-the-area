@@ -53,7 +53,6 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     if (this.editSource.getFeatures().length === 0) {
       this.props.map.addInteraction(this.draw);
       this.draw.on('drawend', (e) => {
-        // debugger
         this.props.map.removeInteraction(this.draw);
         // if (this.props.onAddFeature) {
         //   this.props.onAddFeature();
@@ -70,7 +69,9 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
 
   addLayers() {
     this.createLayers();
-    this.startEdit();
+    if (this.props.isEdit) {
+      this.startEdit();
+    }
     if (this.editLayer) {
       this.props.map.addLayer(this.editLayer);
     }
@@ -86,7 +87,6 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     if (this.props.show) {
       this.addLayers();
     }
-    // this.updateSource();
   }
 
   componentWillUnmount() {

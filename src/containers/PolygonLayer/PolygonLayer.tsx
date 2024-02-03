@@ -10,6 +10,7 @@ export interface MapLayerProps {
   map: MapOL;
   isRemovePolygon: boolean;
   isEdit: boolean;
+  finishedEdit: (coords: number[])  => void;
 }
 
 export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
@@ -49,25 +50,42 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     });
   }
 
+  handleDblClick = () => {
+    this.modify.removePoint();
+    this.props.finishedEdit([3,4]);
+  }
+
+  handleDrawend = () => {
+    this.props.map.removeInteraction(this.draw);
+    // this.props.finishedEdit([1,2]);
+  }
+
+  handleModifyend = () => {
+    this.props.finishedEdit([5,6]);
+  }
+
   startEdit() {
     this.props.map.addInteraction(this.modify);
     this.props.map.addInteraction(this.snap);
     if (this.editSource.getFeatures().length === 0) {
       this.props.map.addInteraction(this.draw);
-      this.props.map.on('dblclick', (e) => {
-        this.modify.removePoint();
-      });
 
-      this.draw.on('drawend', (e) => {
-        this.props.map.removeInteraction(this.draw);
-      });
+      this.props.map.on('dblclick', this.handleDblClick);
+      this.draw.on('drawend', this.handleDrawend);
+      this.modify.on('modifyend', this.handleModifyend);
     }
   }
 
   stopEdit() {
+    this.props.map.removeEventListener('dblclick', this.handleDblClick);
+    this.draw.removeEventListener('drawend', this.handleDrawend);
+    this.modify.removeEventListener('modifyend', this.handleModifyend);
+
     this.props.map.removeInteraction(this.modify);
     this.props.map.removeInteraction(this.draw);
     this.props.map.removeInteraction(this.snap);
+
+
   }
 
   addLayers() {

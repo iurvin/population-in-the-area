@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react'
+import {useCallback, useEffect, useRef, useState} from 'react'
 import './App.css'
 import {MapComponent, MapContainer} from "./containers/MapComponent";
 import {useStore} from "./services/Store.ts";
@@ -27,7 +27,11 @@ function App() {
     if (isRemovePolygon) {
       setEditablePolygon(false);
     }
-  }, [isRemovePolygon])
+  }, [isRemovePolygon]);
+
+  const getPopulation = useCallback((coords: any[]) => {
+    console.log('getPopulation coords', coords)
+  }, []);
 
   return (
     <>
@@ -49,6 +53,7 @@ function App() {
             map={map}
             isEdit={isEditablePolygon}
             isRemovePolygon={isRemovePolygon}
+            finishedEdit={getPopulation}
           />
         )}
       </MapContainer>

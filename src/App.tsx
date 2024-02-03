@@ -11,7 +11,7 @@ function App() {
 
   const mapRef = useRef<MapComponent>(null);
   const [map, setMap] = useState<MapOL>();
-debugger
+
   return (
     <>
       <MapContainer>

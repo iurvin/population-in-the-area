@@ -9,14 +9,11 @@ import {Component} from "react";
 export interface MapLayerProps {
   map: MapOL;
   show: boolean;
+  isEdit: boolean;
 }
 
 export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
-  source = new VectorSource<Feature<Geometry>>();
-
   editSource = new VectorSource<Feature<Geometry>>();
-
-  layer: VectorLayer<any> | undefined;
 
   editLayer: VectorLayer<any> | undefined;
 
@@ -37,27 +34,16 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   snap = new Snap({source: this.editSource});
 
   createLayers() {
-    this.layer = new VectorLayer({
-      source: this.source,
-      style: {
-        'fill-color': 'rgba(255, 255, 255, 0.2)',
-        'stroke-color': '#ffcc33',
-        'stroke-width': 2,
-        'circle-radius': 7,
-        'circle-fill-color': '#ffcc33',
-      },
-      zIndex: 50,
-    });
     this.editLayer = new VectorLayer({
       source: this.editSource,
       style: {
         'fill-color': 'rgba(255, 255, 255, 0.2)',
-        'stroke-color': '#ffcc33',
+        'stroke-color': '#FF0000',
         'stroke-width': 2,
         'circle-radius': 7,
-        'circle-fill-color': '#ffcc33',
+        'circle-fill-color': '#FF0000',
       },
-      zIndex: 51,
+      zIndex: 50,
     });
   }
 
@@ -67,6 +53,7 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     if (this.editSource.getFeatures().length === 0) {
       this.props.map.addInteraction(this.draw);
       this.draw.on('drawend', (e) => {
+        // debugger
         this.props.map.removeInteraction(this.draw);
         // if (this.props.onAddFeature) {
         //   this.props.onAddFeature();
@@ -82,7 +69,6 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   }
 
   addLayers() {
-    debugger;
     this.createLayers();
     this.startEdit();
     if (this.editLayer) {
@@ -105,6 +91,14 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
 
   componentWillUnmount() {
     this.removeLayers();
+  }
+
+  componentDidUpdate(prevProps: Readonly<MapLayerProps & T>, prevState: Readonly<any>, snapshot?: any) {
+    if (this.props.isEdit) {
+      this.startEdit();
+    } else {
+      this.stopEdit();
+    }
   }
 
   render(): JSX.Element | null {

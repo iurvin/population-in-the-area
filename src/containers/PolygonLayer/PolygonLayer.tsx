@@ -50,11 +50,11 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     });
   }
 
-  handleDblClick = (e) => {
+  handleDblClick = () => {
     this.modify.removePoint();
   }
 
-  handleDrawend = (e) => {
+  handleDrawend = (e: any) => {
     this.props.map.removeInteraction(this.draw);
 
     const feature = e.feature;
@@ -63,7 +63,7 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     this.props.finishedEdit(coords);
   }
 
-  handleModifyend = (e) => {
+  handleModifyend = (e: any) => {
     const features = e.features.getArray();
 
     if (features.length) {

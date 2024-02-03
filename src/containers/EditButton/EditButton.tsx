@@ -1,4 +1,5 @@
 import {IconButton} from "../../components/IconButton";
+// @ts-ignore
 import EditIcon from '../../image/edit.svg?react';
 import styled from "styled-components";
 

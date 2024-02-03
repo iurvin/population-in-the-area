@@ -7,7 +7,6 @@ import {PolygonLayer} from "./containers/PolygonLayer";
 import {ButtonsBlock} from "./containers/ButtonsBlock";
 import {EditButton} from './containers/EditButton';
 import {RemovePolygonButton} from "./containers/RemovePolygonButton";
-import debounce from 'lodash.debounce';
 
 function App() {
   const {SettingsService} = useStore();

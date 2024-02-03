@@ -1,4 +1,5 @@
 import {IconButton} from "../../components/IconButton";
+// @ts-ignore
 import Trash from '../../image/trash.svg?react';
 import styled from "styled-components";
 

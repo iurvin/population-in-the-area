@@ -5,6 +5,7 @@ import {useStore} from "./services/Store.ts";
 import {Map as MapOL} from 'ol';
 import {PolygonLayer} from "./containers/PolygonLayer";
 import {EditButton} from './containers/EditButton';
+import {ButtonsBlock} from "./containers/ButtonsBlock";
 
 
 function App() {
@@ -16,7 +17,9 @@ function App() {
 
   return (
     <>
-      <EditButton isActive={isEditablePolygon} changeStatus={setEditablePolygon} />
+      <ButtonsBlock>
+        <EditButton isActive={isEditablePolygon} changeStatus={setEditablePolygon} />
+      </ButtonsBlock>
       <MapContainer>
         <MapComponent
           ref={mapRef}

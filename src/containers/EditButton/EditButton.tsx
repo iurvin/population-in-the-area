@@ -13,18 +13,11 @@ export const EditButton = ({changeStatus, isActive}: IEditButton) => {
   }
 
   return (
-    <EditButtonStyled onClick={handleClick}>
+    <IconButton onClick={handleClick}>
       <EditIconStyled isActive={isActive} />
-    </EditButtonStyled>
+    </IconButton>
   )
 }
-
-const EditButtonStyled = styled(IconButton)`
-    position: absolute;
-    top: 10%;
-    right: 10px;
-    z-index: 1000;
-`;
 
 const EditIconStyled = styled(EditIcon)<{isActive?: boolean}>`
   color: ${(props) => props.isActive ? 'white' : 'gray'};

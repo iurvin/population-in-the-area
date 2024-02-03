@@ -4,6 +4,7 @@ import {MapComponent, MapContainer} from "./containers/MapComponent";
 import {useStore} from "./services/Store.ts";
 import {Map as MapOL} from 'ol';
 import {PolygonLayer} from "./containers/PolygonLayer";
+import {EditButton} from './containers/EditButton';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
 
   return (
     <>
+      <EditButton />
       <MapContainer>
         <MapComponent
           ref={mapRef}

@@ -2,15 +2,15 @@ import VectorSource from "ol/source/Vector";
 import {Geometry} from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import {Draw, Modify, Snap} from "ol/interaction";
-import {Feature} from "ol";
-import {Map as MapOL} from 'ol';
+import {Feature, Map as MapOL} from "ol";
+import {GeoJSON} from 'ol/format'
 import {Component} from "react";
 
 export interface MapLayerProps {
   map: MapOL;
   isRemovePolygon: boolean;
   isEdit: boolean;
-  finishedEdit: (coords: number[][])  => void;
+  finishedEdit: (geoJson: string)  => void;
 }
 
 export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
@@ -57,18 +57,27 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   handleDrawend = (e: any) => {
     this.props.map.removeInteraction(this.draw);
 
-    const feature = e.feature;
-    const coords = feature.getGeometry().getCoordinates();
+    // const feature = e.feature;
+    // const coords = feature.getGeometry().getCoordinates();
 
-    this.props.finishedEdit(coords);
+    const format = new GeoJSON();
+    const geoJsonStr = format.writeFeatures([e.feature], { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+    console.log('geoJsonStr', geoJsonStr);
+
+    this.props.finishedEdit(geoJsonStr);
   }
 
   handleModifyend = (e: any) => {
     const features = e.features.getArray();
 
     if (features.length) {
-      const coords = e.features.getArray()[0].getGeometry().getCoordinates();
-      this.props.finishedEdit(coords);
+      // const coords = e.features.getArray()[0].getGeometry().getCoordinates();
+
+      const format = new GeoJSON();
+      const geoJsonStr = format.writeFeatures(e.features.getArray(), { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+      console.log('geoJsonStr', geoJsonStr);
+
+      this.props.finishedEdit(geoJsonStr);
     }
   }
 
@@ -111,7 +120,7 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   }
 
   componentDidMount() {
-      this.addLayers();
+    this.addLayers();
   }
 
   componentWillUnmount() {

@@ -5,6 +5,7 @@ import {Draw, Modify, Snap} from "ol/interaction";
 import {Feature} from "ol";
 import {Map as MapOL} from 'ol';
 import {Component} from "react";
+import {log} from "ol/console";
 
 export interface MapLayerProps {
   map: MapOL;
@@ -54,15 +55,10 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     this.props.map.addInteraction(this.snap);
     if (this.editSource.getFeatures().length === 0) {
       this.props.map.addInteraction(this.draw);
-      this.props.map.on('dblclick', (evt) => {
-        console.log('doubled');
-        const feature = this.props.map.forEachFeatureAtPixel(evt.pixel,
-          function(feature, layer) {
-            // do stuff here
-            console.log('feature', feature);
-            console.log('layer', layer)
-          });
+      this.props.map.on('dblclick', (e) => {
+        this.modify.removePoint();
       });
+
       this.draw.on('drawend', (e) => {
         this.props.map.removeInteraction(this.draw);
       });

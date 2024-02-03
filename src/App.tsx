@@ -12,9 +12,10 @@ function App() {
   const {SettingsService} = useStore();
 
   const mapRef = useRef<MapComponent>(null);
-  const [map, setMap] = useState<MapOL>();
+  const [map, setMap] = useState<MapOL | null>();
   const [isEditablePolygon, setEditablePolygon] = useState(false);
   const [isRemovePolygon, setRemove] = useState(false);
+  const [population, setPopulation] =useState<number | null>(null);
 
   useEffect(() => {
     if (isEditablePolygon) {
@@ -28,14 +29,16 @@ function App() {
     }
   }, [isRemovePolygon]);
 
-  const getPopulation = useCallback((coords: number[][]) => {
-    console.log('getPopulation coords', coords);
-    // debounce(() => {
-      fetch('https://gis01.rumap.ru/4898/areaStatistics?guid=93BC6341-B35E-4B34-9DFE-26796F64BBB7&x=37.5883478515625&y=55.86490910676764&maxdist=5000&geometry=1')
-        .then((res) => {
-          console.log('res', res);
-        })
-    // }, 0)
+  const getPopulation = useCallback((geoJsonStr: string) => {
+    fetch('https://gis01.rumap.ru/4898/areaStatistics?' + new URLSearchParams({
+      'guid': '93BC6341-B35E-4B34-9DFE-26796F64BBB7',
+      'geojson': geoJsonStr,
+      'geometry': '1'
+    }))
+      .then((res) => res.json())
+      .then((res) => {
+        setPopulation(res.population_rsv);
+      })
   }, []);
 
   return (
@@ -59,6 +62,7 @@ function App() {
             isEdit={isEditablePolygon}
             isRemovePolygon={isRemovePolygon}
             finishedEdit={getPopulation}
+            population={population}
           />
         )}
       </MapContainer>

@@ -2,23 +2,40 @@ import VectorSource from "ol/source/Vector";
 import {Geometry} from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import {Draw, Modify, Snap} from "ol/interaction";
-import {Feature} from "ol";
-import {Map as MapOL} from 'ol';
+import {Feature, Map as MapOL} from "ol";
+import {GeoJSON} from 'ol/format'
 import {Component} from "react";
+import {Text, Fill, Stroke, Style} from 'ol/style';
+
+const styleText = (text: string) => {
+  const font = 12;
+  return new Text({
+      font: font+'px Arial',
+      fill: new Fill({
+        color: '#FF0000'
+      }),
+      stroke: new Stroke({
+        color: '#fff',
+        width: 3
+      }),
+      textAlign: "center",
+      textBaseline: "middle",
+      text:  text,
+      overflow: true
+    });
+}
 
 export interface MapLayerProps {
   map: MapOL;
   isRemovePolygon: boolean;
   isEdit: boolean;
-  finishedEdit: (coords: number[][])  => void;
+  finishedEdit: (geoJson: string)  => void;
+  population: null | number;
 }
 
-export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
-  source = new VectorSource<Feature<Geometry>>();
+export class PolygonLayer<T> extends Component<MapLayerProps & T, never>{
   editSource = new VectorSource<Feature<Geometry>>();
-
-  layer: VectorLayer<any> | undefined;
-  editLayer: VectorLayer<any> | undefined;
+  editLayer: VectorLayer<VectorSource<Feature<Geometry>>> | undefined;
 
   modify = new Modify({source: this.editSource});
 
@@ -39,12 +56,17 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   createLayers() {
     this.editLayer = new VectorLayer({
       source: this.editSource,
-      style: {
-        'fill-color': 'rgba(255, 255, 255, 0.3)',
-        'stroke-color': '#FF0000',
-        'stroke-width': 2,
-        'circle-radius': 7,
-        'circle-fill-color': '#FF0000',
+      style: () => {
+        return [new Style({
+          text: styleText(''),
+          fill: new Fill({
+            color: 'rgba(255, 255, 255, 0.3)',
+          }),
+          stroke: new Stroke({
+            color: '#FF0000',
+            width: 2,
+          }),
+        })]
       },
       zIndex: 50,
     });
@@ -57,18 +79,18 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   handleDrawend = (e: any) => {
     this.props.map.removeInteraction(this.draw);
 
-    const feature = e.feature;
-    const coords = feature.getGeometry().getCoordinates();
-
-    this.props.finishedEdit(coords);
+    const format = new GeoJSON();
+    const geoJsonStr = format.writeFeatures([e.feature], { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+    this.props.finishedEdit(geoJsonStr);
   }
 
   handleModifyend = (e: any) => {
     const features = e.features.getArray();
 
     if (features.length) {
-      const coords = e.features.getArray()[0].getGeometry().getCoordinates();
-      this.props.finishedEdit(coords);
+      const format = new GeoJSON();
+      const geoJsonStr = format.writeFeatures(e.features.getArray(), { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+      this.props.finishedEdit(geoJsonStr);
     }
   }
 
@@ -111,14 +133,14 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
   }
 
   componentDidMount() {
-      this.addLayers();
+    this.addLayers();
   }
 
   componentWillUnmount() {
     this.removeLayers();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: Readonly<MapLayerProps & T>) {
     if (this.props.isRemovePolygon) {
       this.editSource.clear();
       this.removeLayers();
@@ -129,6 +151,19 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
       this.startEdit();
     } else {
       this.stopEdit();
+    }
+
+    if (prevProps.population !== this.props.population) {
+      this.editLayer?.setStyle(new Style({
+        text: styleText(typeof this.props.population === 'number' ? this.props.population.toString() : ''),
+        fill: new Fill({
+          color: 'rgba(255, 255, 255, 0.3)',
+        }),
+        stroke: new Stroke({
+          color: '#FF0000',
+          width: 2,
+        }),
+      }))
     }
   }
 

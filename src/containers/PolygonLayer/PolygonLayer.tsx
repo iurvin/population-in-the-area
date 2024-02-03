@@ -54,6 +54,15 @@ export class PolygonLayer<T> extends Component<MapLayerProps & T, any>{
     this.props.map.addInteraction(this.snap);
     if (this.editSource.getFeatures().length === 0) {
       this.props.map.addInteraction(this.draw);
+      this.props.map.on('dblclick', (evt) => {
+        console.log('doubled');
+        const feature = this.props.map.forEachFeatureAtPixel(evt.pixel,
+          function(feature, layer) {
+            // do stuff here
+            console.log('feature', feature);
+            console.log('layer', layer)
+          });
+      });
       this.draw.on('drawend', (e) => {
         this.props.map.removeInteraction(this.draw);
       });

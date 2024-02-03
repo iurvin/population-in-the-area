@@ -1,5 +1,5 @@
 import {Component, createRef, ReactNode} from "react";
-import {Feature, Map as MapOL, MapBrowserEvent, Geolocation, View, Overlay, Collection} from 'ol';
+import {Feature, Map as MapOL, MapBrowserEvent, View, Overlay, Collection} from 'ol';
 import {Geometry} from "ol/geom";
 import {Style} from "ol/style";
 import {MapService, MapAPI} from "../../services/MapService.ts";
@@ -11,34 +11,29 @@ import {OSM} from "ol/source";
 import BaseLayer from "ol/layer/Base";
 import {defaults as defaultInteractions} from 'ol/interaction.js';
 
-export enum MapLayerType {
-  'OSM' = 'OSM',
-}
-
 interface State {
   map: MapOL | null;
   eventCoordinate: number[];
 }
 
 interface Props {
-  onChangeBoundary?: Function;
+  onChangeBoundary?: () => void;
   defaultCenter: number[];
   defaultZoom: number;
   selectedFeature?: Feature<Geometry> | null;
 
-  onSelectFeature?: any;
+  onSelectFeature?: () => void;
   onClickMap?: (event: MapBrowserEvent<UIEvent>) => void;
-  onLoadMap?: any;
+  onLoadMap?: (map: OLMap | null) => void;
 
   children?: ReactNode;
-  // currentLayer: MapLayerType;
 
   theme?: string;
 
   editMode?: boolean;
 
   isUseRuler?: boolean;
-  onTurnOffRuler?: Function;
+  onTurnOffRuler?: () => void;
   onChangeLengthRuler?: (len: number) => void;
   rulerStyles?: Style | Style[];
   mapAPI?: MapService;
@@ -59,13 +54,6 @@ export class MapComponent extends Component<Props, State>{
   baseLayers = new LayerGroup({
     layers: [],
     zIndex: 0,
-  });
-
-  geolocation = new Geolocation({
-    tracking: true,
-    trackingOptions: {
-      enableHighAccuracy: true,
-    },
   });
 
   overlay = new Overlay({
@@ -116,7 +104,6 @@ export class MapComponent extends Component<Props, State>{
         if (currentZoom >= this.MAX_ZOOM) {
           e.map.getView().setZoom(this.MAX_ZOOM);
         }
-
       });
 
       this.setState({map}, () => {

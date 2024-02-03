@@ -12,9 +12,10 @@ function App() {
   const {SettingsService} = useStore();
 
   const mapRef = useRef<MapComponent>(null);
-  const [map, setMap] = useState<MapOL>();
+  const [map, setMap] = useState<MapOL | null>();
   const [isEditablePolygon, setEditablePolygon] = useState(false);
   const [isRemovePolygon, setRemove] = useState(false);
+  const [population, setPopulation] =useState<number | null>(null);
 
   useEffect(() => {
     if (isEditablePolygon) {
@@ -34,11 +35,9 @@ function App() {
       'geojson': geoJsonStr,
       'geometry': '1'
     }))
+      .then((res) => res.json())
       .then((res) => {
-        return  res.json();
-      })
-      .then((res) => {
-        console.log('population_rsv', res.population_rsv);
+        setPopulation(res.population_rsv);
       })
   }, []);
 
@@ -63,6 +62,7 @@ function App() {
             isEdit={isEditablePolygon}
             isRemovePolygon={isRemovePolygon}
             finishedEdit={getPopulation}
+            population={population}
           />
         )}
       </MapContainer>

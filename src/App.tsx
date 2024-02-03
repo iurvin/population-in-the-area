@@ -3,15 +3,15 @@ import './App.css'
 import {MapComponent, MapContainer} from "./containers/MapComponent";
 import {useStore} from "./services/Store.ts";
 import {Map as MapOL} from 'ol';
+import {PolygonLayer} from "./containers/PolygonLayer";
 
 
 function App() {
   const {SettingsService} = useStore();
 
   const mapRef = useRef<MapComponent>(null);
-  // @ts-ignore
   const [map, setMap] = useState<MapOL>();
-
+debugger
   return (
     <>
       <MapContainer>
@@ -19,9 +19,14 @@ function App() {
           ref={mapRef}
           defaultCenter={SettingsService.mapCenter}
           defaultZoom={SettingsService.mapZoom}
-          // currentLayer={SettingsService.mapLayer}
           onLoadMap={setMap}
         />
+        {map && (
+          <PolygonLayer
+            map={map}
+            show={true}
+          />
+        )}
       </MapContainer>
     </>
   )

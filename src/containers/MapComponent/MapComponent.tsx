@@ -79,6 +79,12 @@ export class MapComponent extends Component<Props, State>{
     this.initMap();
   }
 
+  private onLoadMap() {
+    if (this.props.onLoadMap) {
+      this.props.onLoadMap(this.state.map);
+    }
+  }
+
   initMap() {
     if (this.mapContainer.current) {
       const map = new OLMap({
@@ -111,6 +117,7 @@ export class MapComponent extends Component<Props, State>{
 
       this.setState({map}, () => {
         this.setLayer();
+        this.onLoadMap();
       });
     }
   }

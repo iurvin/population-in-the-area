@@ -31,7 +31,7 @@ function App() {
   const getPopulation = useCallback((coords: number[][]) => {
     console.log('getPopulation coords', coords);
     // debounce(() => {
-      fetch('http://gis01.rumap.ru/4898/areaStatistics?guid=93BC6341-B35E-4B34-9DFE-26796F64BBB7&x=37.5883478515625&y=55.86490910676764&maxdist=5000&geometry=1')
+      fetch('https://gis01.rumap.ru/4898/areaStatistics?guid=93BC6341-B35E-4B34-9DFE-26796F64BBB7&x=37.5883478515625&y=55.86490910676764&maxdist=5000&geometry=1')
         .then((res) => {
           console.log('res', res);
         })

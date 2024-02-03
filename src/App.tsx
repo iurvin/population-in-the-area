@@ -12,10 +12,11 @@ function App() {
 
   const mapRef = useRef<MapComponent>(null);
   const [map, setMap] = useState<MapOL>();
+  const [isEditablePolygon, setEditablePolygon] = useState(false);
 
   return (
     <>
-      <EditButton />
+      <EditButton isActive={isEditablePolygon} changeStatus={setEditablePolygon} />
       <MapContainer>
         <MapComponent
           ref={mapRef}
@@ -27,6 +28,7 @@ function App() {
           <PolygonLayer
             map={map}
             show={true}
+            isEdit={isEditablePolygon}
           />
         )}
       </MapContainer>
